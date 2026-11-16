@@ -1,61 +1,202 @@
-const isPrime = n => {
-    if (n < 2) return false;
-    for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
-    return true;
-};
-const gcd = (a, b) => b ? gcd(b, a % b) : a;
-const power = (b, e, m) => {
-    let r = 1n; b = BigInt(b) % BigInt(m); e = BigInt(e);
-    while (e > 0n) { if (e % 2n === 1n) r = (r * b) % BigInt(m); b = (b * b) % BigInt(m); e /= 2n; }
-    return r;
-};
-function modInverse(e, phi) {
-    let m0 = phi, t, q, x0 = 0n, x1 = 1n;
-    if (phi === 1n) return 0n;
-    while (e > 1n) { q = e / phi; t = phi; phi = e % phi; e = t; t = x0; x0 = x1 - q * x0; x1 = t; }
-    return x1 < 0n ? x1 + m0 : x1;
+// Переключение вкладок RSA / AES
+function switchTab(tabName) {
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => tab.classList.remove('active'));
+    contents.forEach(content => content.classList.remove('active'));
+
+    if (tabName === 'rsa') {
+        tabs[0].classList.add('active');
+        document.getElementById('rsaTab').classList.add('active');
+    } else {
+        tabs[1].classList.add('active');
+        document.getElementById('aesTab').classList.add('active');
+    }
 }
 
-function getKeys() {
-    const p = parseInt(document.getElementById('p_val').value);
-    const q = parseInt(document.getElementById('q_val').value);
-    if (!isPrime(p) || !isPrime(q)) throw new Error("p и q должны быть простыми!");
-    
-    const n = BigInt(p * q);
-    const phi = BigInt((p - 1) * (q - 1));
-    let e = 3n;
-    while (gcd(Number(e), Number(phi)) !== 1) e += 2n;
+// ----------------- RSA ФУНКЦИИ -----------------
+function powerMod(base, exp, mod) {
+    let res = 1n;
+    base = BigInt(base) % BigInt(mod);
+    exp = BigInt(exp);
+    let m = BigInt(mod);
+
+    while (exp > 0n) {
+        if (exp % 2n === 1n) res = (res * base) % m;
+        base = (base * base) % m;
+        exp = exp / 2n;
+    }
+    return res;
+}
+
+function gcd(a, b) {
+    while (b !== 0n) {
+        let temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+function modInverse(e, phi) {
+    let m0 = phi;
+    let y = 0n, x = 1n;
+    if (phi === 1n) return 0n;
+
+    while (e > 1n) {
+        let q = e / phi;
+        let t = phi;
+        phi = e % phi;
+        e = t;
+        t = y;
+        y = x - q * y;
+        x = t;
+    }
+    if (x < 0n) x += m0;
+    return x;
+}
+
+function getRSAKeys() {
+    const pStr = document.getElementById('pVal').value.trim();
+    const qStr = document.getElementById('qVal').value.trim();
+
+    if (!pStr || !qStr) throw new Error('Введите числа p и q!');
+
+    const p = BigInt(pStr);
+    const q = BigInt(qStr);
+    const n = p * q;
+    const phi = (p - 1n) * (q - 1n);
+
+    if (phi <= 0n) throw new Error('Некорректные числа p и q!');
+
+    let e = 65537n;
+    if (e >= phi || gcd(e, phi) !== 1n) {
+        e = 3n;
+        while (e < phi) {
+            if (gcd(e, phi) === 1n) break;
+            e += 2n;
+        }
+    }
     const d = modInverse(e, phi);
-    return { e, d, n };
+    return { p, q, n, phi, e, d };
 }
 
 function encryptRSA() {
-    try {
-        const { e, n } = getKeys();
-        const text = document.getElementById('word_to_encrypt').value;
-        if (!text) return alert("Введите текст");
+    const text = document.getElementById('plainTextRSA').value;
+    const outputBox = document.getElementById('outputBoxRSA');
 
-        const encrypted = Array.from(text).map(char => power(char.charCodeAt(0), e, n));
-       document.getElementById('result').innerHTML = `<b>Result:</b><br>${encrypted.join(', ')}`;
+    if (!text) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите слово!';
+        return;
+    }
+
+    try {
+        const keys = getRSAKeys();
+        let cipherArr = [];
+        for (let i = 0; i < text.length; i++) {
+            let charCode = BigInt(text.charCodeAt(i));
+            if (charCode >= keys.n) {
+                outputBox.style.color = '#e74c3c';
+                outputBox.innerText = `Символ "${text[i]}" больше n. Увеличьте p и q!`;
+                return;
+            }
+            let encryptedChar = powerMod(charCode, keys.e, keys.n);
+            cipherArr.push(encryptedChar.toString());
+        }
+
+        outputBox.style.color = '#2ecc71';
+        outputBox.innerText = cipherArr.join(', ');
+        document.getElementById('cipherInputRSA').value = cipherArr.join(', ');
     } catch (err) {
-    document.getElementById('result').innerHTML = `<span style="color: #ff6b6b;">Ошибка: ${err.message}</span>`;
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Ошибка: ' + err.message;
     }
 }
 
 function decryptRSA() {
+    const cipherText = document.getElementById('cipherInputRSA').value;
+    const outputBox = document.getElementById('outputBoxRSA');
+
+    if (!cipherText) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите числа через запятую!';
+        return;
+    }
+
     try {
-        const { d, n } = getKeys();
-        const input = document.getElementById('numbers_to_decrypt').value;
-        if (!input) {
-            alert("Введите числа через запятую");
+        const keys = getRSAKeys();
+        const cipherArr = cipherText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let decryptedText = '';
+
+        for (let numStr of cipherArr) {
+            let cipherCode = BigInt(numStr);
+            let decryptedCode = powerMod(cipherCode, keys.d, keys.n);
+            decryptedText += String.fromCharCode(Number(decryptedCode));
+        }
+
+        outputBox.style.color = '#3498db';
+        outputBox.innerText = decryptedText;
+    } catch (err) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Ошибка: ' + err.message;
+    }
+}
+
+// ----------------- AES ФУНКЦИИ -----------------
+function encryptAES() {
+    const key = document.getElementById('aesKey').value.trim();
+    const text = document.getElementById('plainTextAES').value;
+    const outputBox = document.getElementById('outputBoxAES');
+
+    if (!key) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите секретный ключ!';
+        return;
+    }
+    if (!text) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите слово для шифрования!';
+        return;
+    }
+
+    const encrypted = CryptoJS.AES.encrypt(text, key).toString();
+    outputBox.style.color = '#2ecc71';
+    outputBox.innerText = encrypted;
+    document.getElementById('cipherInputAES').value = encrypted;
+}
+
+function decryptAES() {
+    const key = document.getElementById('aesKey').value.trim();
+    const cipherText = document.getElementById('cipherInputAES').value.trim();
+    const outputBox = document.getElementById('outputBoxAES');
+
+    if (!key) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите секретный ключ!';
+        return;
+    }
+    if (!cipherText) {
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Введите зашифрованную строку!';
+        return;
+    }
+
+    try {
+        const bytes = CryptoJS.AES.decrypt(cipherText, key);
+        const originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!originalText) {
+            outputBox.style.color = '#e74c3c';
+            outputBox.innerText = 'Неверный ключ или поврежденный текст!';
             return;
         }
-        const numbersArray = input.split(',').map(num => BigInt(num.trim()));
-        
-        const decrypted = numbersArray.map(num => String.fromCharCode(Number(power(num, d, n)))).join('');
-        
-        document.getElementById('result').innerHTML = `<b>Decrypted:</b><br>${decrypted}`;
+
+        outputBox.style.color = '#3498db';
+        outputBox.innerText = originalText;
     } catch (err) {
-        document.getElementById('result').innerHTML = `<span style="color: #ff6b6b;">Error: ${err.message}</span>`;
+        outputBox.style.color = '#e74c3c';
+        outputBox.innerText = 'Ошибка расшифровки!';
     }
 }
