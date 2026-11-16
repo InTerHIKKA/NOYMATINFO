@@ -1,86 +1,168 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 body {
+    background-color: #1a1528;
+    background-image: 
+        /* Затемняющий градиент со второго сайта */
+        radial-gradient(circle at center, rgba(76, 47, 110, 0.45) 0%, rgba(18, 12, 30, 0.95) 100%),
+        /* Надписи RSA с первого сайта (рукописный шрифт, наклон -20) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Ctext x='20' y='50' fill='rgba(255,255,255,0.08)' font-family='Brush Script MT, cursive' font-size='30' transform='rotate(-20)'%3ERSA%3C/text%3E%3C/svg%3E"),
+        /* Надписи ФМЛ с первого сайта (контурный шрифт, наклон -15) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Ctext x='50' y='120' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1.5' font-family='Arial, sans-serif' font-size='80' font-weight='bold' transform='rotate(-15)'%3E%D0%A4%D0%9C%D0%9B%3C/text%3E%3C/svg%3E");
+
+    background-repeat: no-repeat, repeat, repeat;
+    background-position: center, 0 0, 150px 100px;
+    background-size: cover, 150px 100px, 300px 200px;
+    
+    color: #fff;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #5c5c70; 
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden;
-}
-
-.bg-pattern {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    z-index: -1;
-    opacity: 0.6;
-
-    background-image: 
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Ctext x='20' y='50' fill='rgba(255,255,255,0.1)' font-family='Brush Script MT, cursive' font-size='30' transform='rotate(-20)'%3ERSA%3C/text%3E%3C/svg%3E"),
-        
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Ctext x='50' y='120' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1.5' font-family='Arial, sans-serif' font-size='80' font-weight='bold' transform='rotate(-15)'%3E%D0%A4%D0%9C%D0%9B%3C/text%3E%3C/svg%3E");
-
-    background-repeat: repeat, repeat;
-    background-position: 0 0, 150px 100px;
-    background-size: 150px 100px, 300px 200px;
 }
 
 .container {
-    background-color: #252525;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-    width: 400px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
 }
 
-h1 { color: white; margin-bottom: 25px; font-weight: 300; }
-h3 { font-size: 1rem; color: #fff; margin-bottom: 15px; }
+.card {
+    background: #181522;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    border: 1px solid #2d2640;
+}
+
+/* Вкладки (Tabs) */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: #110e18;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #2d2640;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: #8c82a5;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0;
+}
+
+.tab-btn.active {
+    background: #9b51e0;
+    color: #ffffff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+h2 {
+    font-size: 13px;
+    color: #b3a8cb;
+    margin-bottom: 8px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
 
 input {
     width: 100%;
     padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid #444;
-    background-color: #333;
-    color: white;
-    box-sizing: border-box;
+    background: #231f30;
+    border: 1px solid #38314c;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #9b51e0;
+}
+
+input::placeholder {
+    color: #6e6785;
+}
+
+.hint {
+    font-size: 11px;
+    color: #8c82a5;
+    text-align: center;
+    margin-bottom: 8px;
 }
 
 button {
     width: 100%;
     padding: 12px;
-    margin-top: 10px;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 14px;
     font-weight: bold;
-    transition: 0.3s;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-bottom: 5px;
 }
 
-#encrypt-btn { background-color: #0078d4; color: white; }
-#decrypt-btn { background-color: #28a745; color: white; }
+button:active {
+    transform: scale(0.99);
+}
 
-button:hover { opacity: 0.8; transform: translateY(-2px); }
+.btn-encrypt {
+    background-color: #ffffff;
+    color: #181522;
+}
 
-.result {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #1a1a1a;
-    border-radius: 8px;
-    color: #eee;
+.btn-encrypt:hover {
+    background-color: #e5e0f0;
+}
+
+.btn-decrypt {
+    background-color: #2ecc71;
+    color: #ffffff;
+}
+
+.btn-decrypt:hover {
+    background-color: #27ae60;
+}
+
+.output-box {
+    margin-top: 15px;
+    background: #110e18;
+    border: 1px solid #2d2640;
+    padding: 12px;
+    border-radius: 6px;
+    color: #8c82a5;
     font-family: monospace;
-    text-align: left;
-    min-height: 40px;
-    border: 1px solid #333;
+    font-size: 13px;
+    word-break: break-all;
+    min-height: 45px;
+    text-align: center;
 }
-
 hr { border: 0; border-top: 1px solid #444; margin: 25px 0; }
