@@ -3,36 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSA Шифратор и Дешифратор</title>
-    <link rel="stylesheet" href="css/main.css">
+    <title>Инструмент Шифрования — RSA & AES</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключаем библиотеку CryptoJS для работы AES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
-    <div class="bg-pattern"></div> 
     <div class="container">
-        <h1>RSA Инструмент</h1>
-        
-        <div class="box">
-            <h3>Зашифровать текст</h3>
-            <input type="number" id="p_val" placeholder="Число p">
-            <input type="number" id="q_val" placeholder="Число q">
-            <input type="text" id="word_to_encrypt" placeholder="Введите слово">
-            <button onclick="encryptRSA()">Зашифровать</button>
-        </div>
+        <div class="card">
+            <!-- Переключатель между RSA и AES -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('rsa')">RSA Инструмент</button>
+                <button class="tab-btn" onclick="switchTab('aes')">AES Инструмент</button>
+            </div>
 
-        <hr>
+            <!-- Вкладка 1: RSA -->
+            <div id="rsaTab" class="tab-content active">
+                <h2>Зашифровать текст (RSA)</h2>
+                <div class="form-group">
+                    <input type="text" id="pVal" placeholder="Число p (напр. 61)">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="qVal" placeholder="Число q (напр. 53)">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="plainTextRSA" placeholder="Введите слово">
+                </div>
+                <button class="btn-encrypt" onclick="encryptRSA()">Зашифровать</button>
 
-        <div class="box">
-            <h3>Расшифровать числа</h3>
-            <input type="text" id="numbers_to_decrypt" placeholder="Числа через запятую">
-            <p style="font-size: 0.8em; color: #aaa;">Для расшифровки используйте те же p и q выше</p>
-            <button onclick="decryptRSA()" style="background-color: #28a745;">Расшифровать</button>
-        </div>
+                <h2 style="margin-top: 25px;">Расшифровать числа (RSA)</h2>
+                <div class="form-group">
+                    <input type="text" id="cipherInputRSA" placeholder="Числа через запятую (напр. 12, 45, 8)">
+                </div>
+                <div class="hint">Для расшифровки используйте те же p и q выше</div>
+                <button class="btn-decrypt" onclick="decryptRSA()">Расшифровать</button>
 
-        <div class="result" id="result">
-            Здесь будет результат...
+                <div id="outputBoxRSA" class="output-box">Здесь будет результат...</div>
+            </div>
+
+            <!-- Вкладка 2: AES -->
+            <div id="aesTab" class="tab-content">
+                <h2>Зашифровать текст (AES)</h2>
+                <div class="form-group">
+                    <input type="text" id="aesKey" placeholder="Секретный ключ (пароль)">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="plainTextAES" placeholder="Введите слово">
+                </div>
+                <button class="btn-encrypt" onclick="encryptAES()">Зашифровать</button>
+
+                <h2 style="margin-top: 25px;">Расшифровать строку (AES)</h2>
+                <div class="form-group">
+                    <input type="text" id="cipherInputAES" placeholder="Зашифрованная строка Base64">
+                </div>
+                <div class="hint">Для расшифровки используйте тот же секретный ключ</div>
+                <button class="btn-decrypt" onclick="decryptAES()">Расшифровать</button>
+
+                <div id="outputBoxAES" class="output-box">Здесь будет результат...</div>
+            </div>
+
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
