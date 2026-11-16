@@ -1,4 +1,3 @@
-// Переключение вкладок RSA / AES
 function switchTab(tabName) {
     const tabs = document.querySelectorAll('.tab-btn');
     const contents = document.querySelectorAll('.tab-content');
@@ -15,7 +14,6 @@ function switchTab(tabName) {
     }
 }
 
-// ----------------- RSA ФУНКЦИИ -----------------
 function powerMod(base, exp, mod) {
     let res = 1n;
     base = BigInt(base) % BigInt(mod);
@@ -144,7 +142,6 @@ function decryptRSA() {
     }
 }
 
-// ----------------- AES ФУНКЦИИ -----------------
 function encryptAES() {
     const key = document.getElementById('aesKey').value.trim();
     const text = document.getElementById('plainTextAES').value;
