@@ -6,11 +6,8 @@
 body {
     background-color: #1a1528;
     background-image: 
-        /* Затемняющий градиент со второго сайта */
         radial-gradient(circle at center, rgba(76, 47, 110, 0.45) 0%, rgba(18, 12, 30, 0.95) 100%),
-        /* Надписи RSA с первого сайта (рукописный шрифт, наклон -20) */
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='100' viewBox='0 0 150 100'%3E%3Ctext x='20' y='50' fill='rgba(255,255,255,0.08)' font-family='Brush Script MT, cursive' font-size='30' transform='rotate(-20)'%3ERSA%3C/text%3E%3C/svg%3E"),
-        /* Надписи ФМЛ с первого сайта (контурный шрифт, наклон -15) */
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Ctext x='50' y='120' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1.5' font-family='Arial, sans-serif' font-size='80' font-weight='bold' transform='rotate(-15)'%3E%D0%A4%D0%9C%D0%9B%3C/text%3E%3C/svg%3E");
 
     background-repeat: no-repeat, repeat, repeat;
@@ -40,7 +37,6 @@ body {
     border: 1px solid #2d2640;
 }
 
-/* Вкладки (Tabs) */
 .tabs {
     display: flex;
     gap: 8px;
